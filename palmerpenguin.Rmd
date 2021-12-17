@@ -1,0 +1,170 @@
+---
+title: "Project Palmer Penguin"
+author: "Nitesh"
+date: "12/17/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+```{r}
+#This is a Palmer Penguin data that has lots of information about three penguin species in the Palmer Archipelago. This includes size measurements, clutch sizes, blood isotope ratios etc. 
+```
+
+```{r}
+#Installing and loading packages
+library("tidyverse")
+library("dplyr")
+library("palmerpenguins")
+```
+
+```{r include=FALSE}
+#To get the summary of dataset including row and column
+library("palmerpenguins")
+glimpse(penguins)
+```
+
+```{r}
+#Just to explore species column
+penguins %>% 
+  select(species)
+```
+```{r}
+#All columns except species
+penguins %>% 
+  select(-species)
+```
+```{r}
+#Rename one column and change all column name to lower case
+penguins %>%   
+  rename(island_new=island)
+rename_with(penguins, tolower)
+```
+```{r}
+#sorting penguin with its bill length(ascending order). Just add "-" infront of bill_length_mm to sort in descending order.
+library(tidyverse)
+penguins %>% 
+  arrange(-bill_length_mm)
+```
+```{r}
+#saving new data frame with bill length in descending order
+penguins2 <- penguins %>%
+  arrange(-bill_length_mm)
+View(penguins2)
+```
+
+```{r}
+#Group penguin by island and get the mean bill length. This shows the mean bill length of penguin across different islands. 
+penguins %>% 
+  group_by(island) %>% 
+  drop_na() %>%  
+  summarize(mean_bill_length_mm = mean(bill_length_mm))
+```
+```{r}
+#Group penguin by island and get the mean bill length. We found that the penguin with longest bill lives in Biscoe island.
+penguins %>% 
+  group_by(island) %>% 
+  drop_na() %>%  
+  summarize(max_bill_length_mm = max(bill_length_mm))
+```
+
+```{r}
+##combine both max and mean calculation that will group data. 
+penguins %>% 
+  group_by(species, island) %>% 
+  drop_na() %>%  
+ summarize(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm))
+```
+
+```{r}
+##Get the info about Adelie penguin only
+penguins %>% 
+  filter(species == "Adelie")
+```
+```{r}
+#Correlation between bill length and body mass for different species
+penguins %>% 
+  group_by(species) %>% 
+  drop_na() %>% 
+  summarize(mean(bill_length_mm), sd(bill_length_mm), mean(body_mass_g), sd(body_mass_g), cor(bill_length_mm, body_mass_g))
+```
+```{r}
+#Visualize relationship between flipper and body mass of penguin through out the dataset using ggplot
+library("palmerpenguins")
+library("ggplot2")
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+```
+```{r}
+##Plot with color for different species
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species))
+
+```
+```{r}
+##Visualize the relationship and plot with different shape for penguin species
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape = species))
+
+```
+```{r}
+##Visualize the relationship with different colour and then plot with different shape for penguin species
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape = species, color = species))
+
+```
+```{r}
+##Visualize the relationship with different color and then plot with different shape for penguin species and display transparent
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape = species, alpha = species))
+
+```
+```{r}
+#Visualize the relation of flipper_length and body_mass in line
+ggplot(data = penguins) +
+  geom_smooth(mapping = aes(x = flipper_length_mm, y = body_mass_g)) 
+
+```
+
+
+
+```{r}
+#Combine both line and point charts and display in one graph
+ggplot(data = penguins) +
+geom_smooth(mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+```
+
+```{r}
+#Create barchart with one variable. 
+ggplot(data = penguins) +
+  geom_bar(mapping = aes(x = flipper_length_mm))
+
+```
+
+
+```{r}
+##Adding tile and subtitle to the graph, citation to the graph and adding text in the graph.  
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color = species))+
+  labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle= "Sample of Three Penguin Species", 
+  caption="Data collected by Dr. Kristen Gorman")+
+  annotate("text", x=220,y=3500,label="The Gentoos are the largest", color="purple")
+
+```
+```{r}
+##This shows the relation between flipper length and body mass of different species of penguin with different color
+ggplot(data=penguins, aes(x=flipper_length_mm, y=body_mass_g))+
+  geom_point(aes(color=species))+
+  facet_wrap(~species)
+
+```
+```{r}
+##This shows the relation between flipper length and body mass of different species of penguin with different color including their category
+ggplot(data=penguins, aes(x=flipper_length_mm, y=body_mass_g))+
+  geom_point(aes(color=species))+
+  facet_grid(sex~species)
+```
+```{r}
+
+```
+
